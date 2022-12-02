@@ -11,12 +11,17 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.meruga.photopicker.adapter.ImageAdapter
 
 class MainActivity : AppCompatActivity() {
+
     private val readPermission: Int = 101
     private val REQUEST_CODE: Int = 201
 
     private val imageList = ArrayList<Uri>()
+    private lateinit var adapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Select photos...", Toast.LENGTH_SHORT).show()
             showImagePicker()
         })
+        displaySelectedImages()
     }
 
     private fun showImagePicker() {
@@ -61,6 +67,15 @@ class MainActivity : AppCompatActivity() {
             val imageURL: String? = data.data!!.path
             imageList.add(Uri.parse(imageURL))
         }
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun displaySelectedImages() {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        adapter = ImageAdapter(this, imageList)
+        recyclerView.layoutManager = GridLayoutManager(this, 4)
+        recyclerView.adapter = adapter
+
     }
 
     private fun checkPermission() {
